@@ -21,6 +21,8 @@ df = conll_df(path, file_index=False)
 df.head(40).to_html()
 ```
 
+### Output (truncated):
+
 <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
@@ -577,7 +579,6 @@ df.head(40).to_html()
       <td>_</td>
       <td>_</td>
       <td>_</td>
-
       <td>_</td>
     </tr>
   </tbody>
@@ -1872,6 +1873,8 @@ df.search('f', 'nsubj').search('w', '^[abc]').head().to_html()
 ### Create a concordancer
 
 ```python
+import pandas as pd
+
 def _conclines(match, df=False, column=False):
     """Apply this to each sentence"""
     s, i = match.name
@@ -1891,8 +1894,6 @@ def conc(df, column, query):
     # add left and right columns
     lines = matches.apply(_conclines, df=df, column=column, axis=1)
     return lines[['left', 'match', 'right']]
-
-import pandas as pd
 
 pd.DataFrame.conc = conc
 lines = df.head(1000).conc('l', 'be')

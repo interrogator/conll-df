@@ -1,0 +1,10 @@
+from setuptools import setup
+
+setup(name='conll_df',
+      version='0.0.1',
+      description='CONLL-U to Pandas DataFrame',
+      url='http://github.com/interrogator/conll-df',
+      author='Daniel McDonald',
+      license='MIT',
+      keywords=['corpus', 'linguistics', 'nlp', 'treebank', 'parsing', 'conll', 'ud'],
+      install_requires=["pandas>=0.19.2"])

@@ -15,6 +15,7 @@ curl -O https://github.com/UniversalDependencies/UD_English/raw/master/en-ud-tra
 ```
 
 ```python
+import pandas as pd
 from conll_df import conll_df
 path = 'en-ud-train.txt.conllu'
 df = conll_df(path, file_index=False)
@@ -1634,13 +1635,11 @@ piv.fillna(0).astype(int).to_html()
 ### Create a chainable search method
 
 ```python
-
 def searcher(df, column, query, inverse=False):
     """Search column for regex query"""
     bool_ix = df[column].str.contains(query)
     return df[bool_ix] if not inverse else df[~bool_ix]
 
-import pandas as pd
 pd.DataFrame.search = searcher
 
 # get nominal subjects starting with a, b or c
@@ -1840,8 +1839,6 @@ df.search('f', 'nsubj').search('w', '^[abc]').head().to_html()
 ### Create a concordancer
 
 ```python
-import pandas as pd
-
 def _conclines(match, df=False, column=False):
     """Apply this to each sentence"""
     s, i = match.name

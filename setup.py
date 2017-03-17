@@ -5,6 +5,7 @@ setup(name='conll_df',
       description='CONLL-U to Pandas DataFrame',
       url='http://github.com/interrogator/conll-df',
       author='Daniel McDonald',
+      author_email="mcddjx@gmail.com",
       license='MIT',
       keywords=['corpus', 'linguistics', 'nlp', 'treebank', 'parsing', 'conll', 'ud'],
       install_requires=["pandas>=0.19.2"])

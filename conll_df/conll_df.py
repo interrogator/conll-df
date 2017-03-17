@@ -6,32 +6,32 @@ CONLL_COLUMNS = ['i', 'w', 'l', 'p', 'n', 'm', 'g', 'f', 'd', 'c']
 CONLL_COLUMNS_V2 = ['i', 'w', 'l', 'x', 'p', 'm', 'g', 'f', 'e', 'o']
 
 # possible morphological attributes
-MORPH_ATTS =         ['type',
-                      'animacy',
-                      'gender',
-                      'number'
-                      "Abbr",
-                      "Animacy",
-                      "Aspect",
-                      "Case",
-                      "Definite",
-                      "Degree",
-                      "Evident",
-                      "Foreign",
-                      "Gender",
-                      "Mood",
-                      "NumType",
-                      "Number",
-                      "Person",
-                      "Polarity",
-                      "Polite",
-                      "Poss",
-                      "PronType",
-                      "Reflex",
-                      "Tense",
-                      "VerbForm",
-                      "Voice",
-                      "Type"]
+MORPH_ATTS = ['type',
+              'animacy',
+              'gender',
+              'number'
+              "Abbr",
+              "Animacy",
+              "Aspect",
+              "Case",
+              "Definite",
+              "Degree",
+              "Evident",
+              "Foreign",
+              "Gender",
+              "Mood",
+              "NumType",
+              "Number",
+              "Person",
+              "Polarity",
+              "Polite",
+              "Poss",
+              "PronType",
+              "Reflex",
+              "Tense",
+              "VerbForm",
+              "Voice",
+              "Type"]
 
 def _make_sent_csv(sentstring, fname, meta, splitter, i, skip_meta=False):
     """
@@ -56,6 +56,36 @@ def _make_sent_csv(sentstring, fname, meta, splitter, i, skip_meta=False):
             fixed_lines.append(line)
     return '\n'.join(fixed_lines), meta
 
+def _add_governors_to_df(df):
+    """
+    Add governor info to a DF. Increases memory usage quite a bit.
+    """
+    # save the original index
+    i = df.index.get_level_values('i')
+    # add g
+    dfg = df.set_index('g', append=True)
+    # remove i
+    dfg = dfg.reset_index('i')
+    dfg = df.loc[dfg.index]
+    dfg = dfg[['w', 'l', 'p', 'f']]
+    dfg['i'] = i
+    dfg = dfg.set_index('i', append=True)
+    dfg.index.names = ['file', 's', 'g', 'i']
+    dfg = dfg.reset_index('g', drop=True)
+    for c in list(dfg.columns):
+        try:
+            dfg[c] = dfg[c].cat.add_categories(['ROOT'])
+        except (AttributeError, ValueError):
+            pass
+    dfg = dfg.fillna('ROOT')
+    dfg.columns = ['gw', 'gl', 'gp', 'gf']
+    dfg = df.join(dfg, how="inner")
+    return dfg
+
+
+
+
+
 def conll_df(path,
                corpus_name=False,
                corp_folder=False,
@@ -63,10 +93,10 @@ def conll_df(path,
                skip_morph=False,
                skip_meta=False,
                add_gov=False,
-               drop=False,
+               drop=['text', 'newdoc id'],
                file_index=True,
                categories=True,
-               extra_fields=[],
+               extra_fields='auto',
                drop_redundant=True,
                **kwargs):
     """
@@ -124,7 +154,12 @@ def conll_df(path,
     if v2 and not skip_morph:
         df['m'] = df['m'].fillna('')
         df['o'] = df['o'].fillna('')
-        cats = MORPH_ATTS + ['SpaceAfter'] + extra_fields
+        if extra_fields == 'auto':
+            # evil line to get all possible keys in the final column
+            extra_fields = list(df['o'].str.extractall(r'(?:^|\|)([^=]+?)=')[0].unique())
+        cats = MORPH_ATTS + extra_fields
+        if 'SpaceAfter' not in cats:
+            cats.append('SpaceAfter')
         om = df['o'].str.cat(df['m'], sep='|').str.strip('|_')
         # this is a very slow list comp, but i can't think of a better way to do it.
         # the 'extractall' solution makes columns for not just the value, but the key...
@@ -140,7 +175,12 @@ def conll_df(path,
         metadata.index.name = 's'
         df = metadata.join(df, how='inner')
 
-    badcols = ['o', 'm', 'sent_id', 's', 'i', 'file']
+    # we never want these to show up as a dataframe column
+    badcols = ['sent_id', 's', 'i', 'file']
+    
+    # if we aren't parsing morph and extra columns, we should at least keep them
+    if not skip_morph:
+        badcols += ['o', 'm']
     if drop:
         badcols = badcols + drop
     df = df.drop(badcols, axis=1, errors='ignore')
@@ -153,6 +193,7 @@ def conll_df(path,
         df['g'] = df['g'].astype(int)
     df = df.fillna('_')
 
+    # attempt to categorise data
     if categories:
         for c in list(df.columns):
             if c in ['g', 'date']:
@@ -163,7 +204,7 @@ def conll_df(path,
                 pass
 
     if add_gov:
-        df = add_governors_to_df(df)
+        df = _add_governors_to_df(df)
 
     if not file_index:
         df.index = df.index.droplevel('file')
@@ -175,5 +216,10 @@ def conll_df(path,
                 empty_cols.append(c)
         df = df.drop(empty_cols, axis=1)
 
+    #reorder columns so that important things are first
+    firsts = CONLL_COLUMNS_V2 if v2 else CONLL_COLUMNS
+    firsts = [i for i in firsts if i in list(df.columns)]
+    lasts = [i for i in list(df.columns) if i not in firsts]
+    df = df[firsts + lasts]
+
     return df
-    

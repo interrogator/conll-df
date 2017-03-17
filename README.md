@@ -1673,20 +1673,10 @@ df.search('f', 'nsubj').search('w', '^[abc]').head().to_html()
       <th>Tense</th>
       <th>Voice</th>
       <th>Type</th>
-      <th>gw</th>
-      <th>gl</th>
-      <th>gp</th>
-      <th>gf</th>
-      <th>count</th>
     </tr>
     <tr>
       <th>s</th>
       <th>i</th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
-      <th></th>
       <th></th>
       <th></th>
       <th></th>
@@ -1737,11 +1727,6 @@ df.search('f', 'nsubj').search('w', '^[abc]').head().to_html()
       <td>_</td>
       <td>_</td>
       <td>_</td>
-      <td>announced</td>
-      <td>announce</td>
-      <td>VBD</td>
-      <td>parataxis</td>
-      <td>1</td>
     </tr>
     <tr>
       <th>8</th>
@@ -1768,11 +1753,6 @@ df.search('f', 'nsubj').search('w', '^[abc]').head().to_html()
       <td>_</td>
       <td>_</td>
       <td>_</td>
-      <td>operating</td>
-      <td>operate</td>
-      <td>VBG</td>
-      <td>root</td>
-      <td>1</td>
     </tr>
     <tr>
       <th>9</th>
@@ -1799,11 +1779,6 @@ df.search('f', 'nsubj').search('w', '^[abc]').head().to_html()
       <td>_</td>
       <td>_</td>
       <td>_</td>
-      <td>made</td>
-      <td>make</td>
-      <td>VBN</td>
-      <td>advcl</td>
-      <td>1</td>
     </tr>
     <tr>
       <th rowspan="2" valign="top">12</th>
@@ -1830,11 +1805,6 @@ df.search('f', 'nsubj').search('w', '^[abc]').head().to_html()
       <td>_</td>
       <td>_</td>
       <td>_</td>
-      <td>announced</td>
-      <td>announce</td>
-      <td>VBD</td>
-      <td>root</td>
-      <td>1</td>
     </tr>
     <tr>
       <th>9.0</th>
@@ -1860,14 +1830,11 @@ df.search('f', 'nsubj').search('w', '^[abc]').head().to_html()
       <td>_</td>
       <td>_</td>
       <td>_</td>
-      <td>declined</td>
-      <td>decline</td>
-      <td>VBN</td>
-      <td>ccomp</td>
-      <td>1</td>
     </tr>
   </tbody>
 </table>
+
+
 
 
 ### Create a concordancer
@@ -1879,8 +1846,8 @@ def _conclines(match, df=False, column=False):
     """Apply this to each sentence"""
     s, i = match.name
     sent = df['w'].loc[s]
-    match['left'] = sent.loc[:i].str.cat(sep=' ')
-    match['right'] = sent.loc[i:].str.cat(sep=' ')
+    match['left'] = sent.loc[:i-1].str.cat(sep=' ')
+    match['right'] = sent.loc[i+1:].str.cat(sep=' ')
     formatted = match['w']
     if column != 'w':
         formatted += '/' + match[column]
@@ -1921,67 +1888,67 @@ lines.head(10).to_html()
     <tr>
       <th>2</th>
       <th>9.0</th>
-      <td>[ This killing of a respected cleric will be</td>
+      <td>[ This killing of a respected cleric will</td>
       <td>be/be</td>
-      <td>be causing us trouble for years to come . ]</td>
+      <td>causing us trouble for years to come . ]</td>
     </tr>
     <tr>
       <th rowspan="2" valign="top">4</th>
       <th>4.0</th>
-      <td>Two of them were</td>
+      <td>Two of them</td>
       <td>were/be</td>
-      <td>were being run by 2 officials of the Ministry ...</td>
+      <td>being run by 2 officials of the Ministry of th...</td>
     </tr>
     <tr>
       <th>5.0</th>
-      <td>Two of them were being</td>
+      <td>Two of them were</td>
       <td>being/be</td>
-      <td>being run by 2 officials of the Ministry of th...</td>
+      <td>run by 2 officials of the Ministry of the Inte...</td>
     </tr>
     <tr>
       <th rowspan="4" valign="top">5</th>
       <th>5.0</th>
-      <td>The MoI in Iraq is</td>
+      <td>The MoI in Iraq</td>
       <td>is/be</td>
-      <td>is equivalent to the US FBI , so this would be...</td>
+      <td>equivalent to the US FBI , so this would be li...</td>
     </tr>
     <tr>
       <th>15.0</th>
       <td>The MoI in Iraq is equivalent to the US FBI , ...</td>
       <td>be/be</td>
-      <td>be like having J. Edgar Hoover unwittingly emp...</td>
+      <td>like having J. Edgar Hoover unwittingly employ...</td>
     </tr>
     <tr>
       <th>27.0</th>
       <td>The MoI in Iraq is equivalent to the US FBI , ...</td>
       <td>members/member</td>
-      <td>members of the Weathermen bombers back in the ...</td>
+      <td>of the Weathermen bombers back in the 1960s .</td>
     </tr>
     <tr>
       <th>31.0</th>
       <td>The MoI in Iraq is equivalent to the US FBI , ...</td>
       <td>bombers/bomber</td>
-      <td>bombers back in the 1960s .</td>
+      <td>back in the 1960s .</td>
     </tr>
     <tr>
       <th rowspan="2" valign="top">6</th>
       <th>3.0</th>
-      <td>The third was</td>
+      <td>The third</td>
       <td>was/be</td>
-      <td>was being run by the head of an investment firm .</td>
+      <td>being run by the head of an investment firm .</td>
     </tr>
     <tr>
       <th>4.0</th>
-      <td>The third was being</td>
+      <td>The third was</td>
       <td>being/be</td>
-      <td>being run by the head of an investment firm .</td>
+      <td>run by the head of an investment firm .</td>
     </tr>
     <tr>
       <th>7</th>
       <th>5.0</th>
-      <td>You wonder if he was</td>
+      <td>You wonder if he</td>
       <td>was/be</td>
-      <td>was manipulating the market with his bombing t...</td>
+      <td>manipulating the market with his bombing targe...</td>
     </tr>
   </tbody>
 </table>

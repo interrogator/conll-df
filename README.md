@@ -1643,7 +1643,7 @@ def searcher(df, column, query, inverse=False):
 import pandas as pd
 pd.DataFrame.search = searcher
 
-# get nominal subjects
+# get nominal subjects starting with a, b or c
 df.search('f', 'nsubj').search('w', '^[abc]').head().to_html()
 ```
 <table border="1" class="dataframe">

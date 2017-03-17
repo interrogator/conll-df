@@ -327,7 +327,6 @@ df.head(40).to_html()
       <td>...</td>
       <td>...</td>
       <td>...</td>
-      <td>...</td>
     </tr>
     <tr>
       <th rowspan="10" valign="top">2</th>

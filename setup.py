@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='conll_df',
-      version='0.0.1',
+      version='0.0.2',
       description='CONLL-U to Pandas DataFrame',
       url='http://github.com/interrogator/conll-df',
       author='Daniel McDonald',

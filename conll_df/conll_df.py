@@ -160,6 +160,7 @@ def conll_df(path,
         cats = MORPH_ATTS + extra_fields
         if 'SpaceAfter' not in cats:
             cats.append('SpaceAfter')
+        cats = list(set(cats))
         om = df['o'].str.cat(df['m'], sep='|').str.strip('|_')
         # this is a very slow list comp, but i can't think of a better way to do it.
         # the 'extractall' solution makes columns for not just the value, but the key...

@@ -611,9 +611,7 @@ Alternatively, there's plenty of cool stuff you can do with Pandas by itself. He
 ### Pivot table
 
 ```python
-# add a dummy 'count' of 1 to each entry
-df['count'] = [1 for i in range(len(df))]
-piv = df.pivot_table(values='count', columns='f', index=['x'], aggfunc=sum)
+piv = df.pivot_table(columns='f', index=['x'], aggfunc=len)
 piv.fillna(0).astype(int).to_html()
 ```
 

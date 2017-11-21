@@ -8,7 +8,7 @@ CONLL_COLUMNS_V2 = ['i', 'w', 'l', 'x', 'p', 'm', 'g', 'f', 'e', 'o']
 # possible morphological attributes
 MORPH_ATTS = ['type',
               'animacy',
-              'gender',
+              #'gender',
               'number'
               "Abbr",
               "Animacy",

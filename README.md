@@ -11,13 +11,13 @@ pip install conll-df
 ## Usage
 
 ```shell
-curl -O https://github.com/UniversalDependencies/UD_English/raw/master/en-ud-train.conllu
+curl -O https://raw.githubusercontent.com/UniversalDependencies/UD_English/master/en-ud-train.conllu
 ```
 
 ```python
 import pandas as pd
 from conll_df import conll_df
-path = 'en-ud-train.txt.conllu'
+path = 'en-ud-train.conllu'
 df = conll_df(path, file_index=False)
 df.head(40).to_html()
 ```
